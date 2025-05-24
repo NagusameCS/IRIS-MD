@@ -1,12 +1,7 @@
-// IRIS-MD.js
-// Plug-and-play Markdown + Quiz renderer for educational content
-
-import nerdamer from 'https://cdn.jsdelivr.net/npm/nerdamer/all.min.js';
-
 /**
- * Parses :::quiz blocks into interactive HTML.
+ * Parses :::quiz blocks into interactive elements.
  * @param {string} markdown
- * @returns {string} rendered HTML with quizzes
+ * @returns {string} rendered HTML
  */
 export function renderQuizzes(markdown) {
   const quizRegex = /:::quiz\n([\s\S]*?)\n:::/g;
@@ -18,7 +13,6 @@ export function renderQuizzes(markdown) {
 
     for (const line of lines) {
       if (/^\s/.test(line)) {
-        // continuation of a hint line
         if (currentKey && typeof data[currentKey] === 'string') {
           data[currentKey] += '\n' + line.trim();
         }
@@ -45,9 +39,7 @@ export function renderQuizzes(markdown) {
   });
 }
 
-/**
- * Global quiz checker bound to button.
- */
+// Attach a global check function
 window.checkQuizAnswer = function (id, correctExpr) {
   const container = document.getElementById(id);
   const input = container.querySelector('.quiz-answer').value;
@@ -70,32 +62,14 @@ window.checkQuizAnswer = function (id, correctExpr) {
   }
 };
 
-/**
- * Runs MathJax typesetting if available.
- */
 export function renderMath() {
   if (window.MathJax && window.MathJax.typeset) {
     window.MathJax.typeset();
   }
 }
 
-/**
- * Full Markdown rendering pipeline.
- * @param {string} markdown - raw markdown input
- * @param {HTMLElement} targetElement - where to inject rendered HTML
- */
-export function renderMarkdown(markdown, targetElement) {
-  const withQuizzes = renderQuizzes(markdown);
-
-  // Convert simple markdown manually (basic only)
-  const html = withQuizzes
-    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-    .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
-    .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
-    .replace(/\n---\n/gim, '<hr>')
-    .replace(/\n/g, '<br>');
-
-  targetElement.innerHTML = html;
-
+export function renderMarkdown(md, el) {
+  const html = renderQuizzes(md);
+  el.innerHTML = html;
   renderMath();
 }

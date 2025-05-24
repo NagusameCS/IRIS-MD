@@ -1,15 +1,12 @@
-// Description of the Tool:
-// - Parses custom :::quiz blocks
-// - Symbolic math support with variable binding
-// - LaTeX rendering (KaTeX or MathJax compatible)
-// - Interactive checking
+// IRIS-MD.js
+// Plug-and-play Markdown + Quiz renderer for educational content
 
-import nerdamer from 'nerdamer/all.min.js';
+import nerdamer from 'https://cdn.jsdelivr.net/npm/nerdamer/all.min.js';
 
 /**
- * Parses :::quiz blocks into interactive elements.
+ * Parses :::quiz blocks into interactive HTML.
  * @param {string} markdown
- * @returns {string} rendered HTML
+ * @returns {string} rendered HTML with quizzes
  */
 export function renderQuizzes(markdown) {
   const quizRegex = /:::quiz\n([\s\S]*?)\n:::/g;
@@ -21,7 +18,7 @@ export function renderQuizzes(markdown) {
 
     for (const line of lines) {
       if (/^\s/.test(line)) {
-        // continuation of a hint
+        // continuation of a hint line
         if (currentKey && typeof data[currentKey] === 'string') {
           data[currentKey] += '\n' + line.trim();
         }
@@ -33,7 +30,7 @@ export function renderQuizzes(markdown) {
     }
 
     const id = `quiz-${Math.random().toString(36).slice(2)}`;
-    const questionHTML = data.question.replace(/\$(.*?)\$/g, (_, tex) => `\\(${tex}\\)`);
+    const questionHTML = data.question.replace(/\$(.*?)\$/g, (_, tex) => `\$begin:math:text$${tex}\\$end:math:text$`);
     const hintHTML = data.hint ? `<details><summary>Hint</summary><pre>${data.hint}</pre></details>` : '';
 
     return `
@@ -48,7 +45,9 @@ export function renderQuizzes(markdown) {
   });
 }
 
-// Attach a global check function
+/**
+ * Global quiz checker bound to button.
+ */
 window.checkQuizAnswer = function (id, correctExpr) {
   const container = document.getElementById(id);
   const input = container.querySelector('.quiz-answer').value;
@@ -71,9 +70,32 @@ window.checkQuizAnswer = function (id, correctExpr) {
   }
 };
 
-// Optionally call MathJax or KaTeX after rendering
+/**
+ * Runs MathJax typesetting if available.
+ */
 export function renderMath() {
   if (window.MathJax && window.MathJax.typeset) {
     window.MathJax.typeset();
   }
+}
+
+/**
+ * Full Markdown rendering pipeline.
+ * @param {string} markdown - raw markdown input
+ * @param {HTMLElement} targetElement - where to inject rendered HTML
+ */
+export function renderMarkdown(markdown, targetElement) {
+  const withQuizzes = renderQuizzes(markdown);
+
+  // Convert simple markdown manually (basic only)
+  const html = withQuizzes
+    .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+    .replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>')
+    .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+    .replace(/\n---\n/gim, '<hr>')
+    .replace(/\n/g, '<br>');
+
+  targetElement.innerHTML = html;
+
+  renderMath();
 }

@@ -1,0 +1,83 @@
+{
+  "metadata": {
+    "title": "<Quiz Title>",
+    "description": "<Optional Description>",
+    "difficulty": "<Overall Difficulty Tier>",
+    "tags": ["<tag1>", "<tag2>"],
+    "language": "<en|es|jp|...>",
+    "version": "<vX.Y.Z>"
+  },
+
+  "globals": {
+    "constants": {
+      "<constant_name>": "<value or expression>"
+    },
+    "defaults": {
+      "output_format": "<markdown|html|latex>",
+      "theme": "<theme_name>",
+      "locale": "<en-US|fr-FR|...>"
+    }
+  },
+
+  "questions": [
+    {
+      "id": "<unique_question_id>",
+      "type": "<math|text|code|diagram|...>",
+
+      "variables": {
+        "<var_name>": {
+          "type": "<int|float|expr|choice|bool|string>",
+          "range": ["<min>", "<max>"],              // if applicable
+          "choices": ["<option1>", "<option2>"],     // if type is choice
+          "expression": "<symbolic_expression>",     // if type is expr
+          "condition": "<inline_condition>"          // optional per variable
+        }
+      },
+
+      "conditions": {
+        "hard": ["<required_condition_1>", "<required_condition_2>"],
+        "soft": ["<preferred_condition_1>", "<preferred_condition_2>"]
+      },
+
+      "question": {
+        "template": "<templated_question_string>",
+        "format": "<markdown|latex|text>",
+        "context": {
+          "<symbol_name>": "<type|symbolic_hint>"
+        }
+      },
+
+      "answer": {
+        "method": "<manual|evaluate|differentiate|integrate|solve|expand|custom>",
+        "input": "<expression_or_template_input>",
+        "respect_to": "<variable_name>",             // if applicable
+        "format": "<latex|text|markdown>",
+        "post_process": ["<simplify|expand|factor|none>"]
+      },
+
+      "markscheme": [
+        {
+          "step": "<description_of_step>",
+          "marks": <number_of_marks>,
+          "validator": "<optional_custom_check>"     // optional custom logic
+        }
+      ],
+
+      "explanation": {
+        "template": "<optional_step_by_step_explanation>",
+        "format": "<markdown|latex|text>"
+      },
+
+      "options": {
+        "difficulty": "<S5|S4|S3|...|MS4|HS4>",
+        "tags": ["<tag1>", "<tag2>"],
+        "output": {
+          "style": "<standard|pill|boxed|...>",
+          "theme": "<theme_name>",
+          "collapse_answer": <true|false>,
+          "highlight_variables": <true|false>
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "iris-md",
+  "version": "0.1.0",
+  "description": "A customizable JSON-to-Markdown quiz generator with math rendering and collapsible answers/markschemes.",
+  "main": "generateMarkdown.js",
+  "type": "module",
+  "scripts": {
+    "test": "node example/generate.js"
+  },
+  "keywords": [
+    "markdown",
+    "quiz",
+    "generator",
+    "math",
+    "latex",
+    "collapsible",
+    "json"
+  ],
+  "author": "NagusameCS",
+  "license": "MIT"
+}
